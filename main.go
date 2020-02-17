@@ -20,18 +20,12 @@ var books []Book
 
 func main() {
 
-	// Open up our database connection.
-	// I've set up a database on my local machine using phpmyadmin.
-	// The database is called testDb
-	db, err := sql.Open("mysql", "username:password@tcp(127.0.0.1:3306)/test")
-
-	// if there is an error opening the connection, handle it
+	db, err := sql.Open("mysql", "root:root@tcp(127.0.0.1:3306)/book-store")
 	if err != nil {
-		panic(err.Error())
+		fmt.Println(err)
+	} else {
+		fmt.Println("Connection Established")
 	}
-
-	// defer the close till after the main function has finished
-	// executing
 	defer db.Close()
 
 	fmt.Println("Hello world")
