@@ -1,8 +1,33 @@
-version: '3.1'
+version: '3.3'
 
 services:
+    db:
+      image: mysql
+      restart: always
+      ports:
+        - '3306:3306'
+      volumes:
+        - myvol1:/var/lib/mysql
+      environment:
+        MYSQL_ROOT_PASSWORD: example
+        MYSQL_USER: root
+        MYSQL_PASSWORD: password
+        MYSQL_DATABASE: demodb
+
     adminer:
-      image: dockette/adminer:full-php5
+      image: adminer
       restart: always
       ports:
         - 8080:8080
+
+    fast-data-dev:
+      image: lensesio/fast-data-dev
+      restart: always
+      volumes:
+        - myvol2:/var/lib/mysql
+      ports:
+        - 3030:3030
+
+volumes:
+    myvol1:
+    myvol2:
