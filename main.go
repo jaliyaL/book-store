@@ -6,6 +6,7 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"net/http"
 )
@@ -27,7 +28,7 @@ func dbConn() (db *sql.DB) {
 	dbUser := "root"
 	dbPass := "example"
 	dbName := "book-store"
-	dbHost := "172.18.0.3:3306"
+	dbHost := "172.18.0.4:3306"
 	db, err := sql.Open(dbDriver, dbUser+":"+dbPass+"@tcp("+dbHost+")/"+dbName)
 	if err != nil {
 		panic(err.Error())
@@ -55,6 +56,8 @@ func main() {
 	r.HandleFunc("/books", addBook).Methods("POST")
 	r.HandleFunc("/books/{id}", updateBook).Methods("PUT")
 	r.HandleFunc("/books/{id}", removeBook).Methods("DELETE")
+
+	r.Handle("/metrics", promhttp.Handler())
 
 	log.Fatal(http.ListenAndServe(":2213", r))
 }
