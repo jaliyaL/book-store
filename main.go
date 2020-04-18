@@ -23,23 +23,23 @@ var books []Book
 //var db *sql.DB
 var err error
 
-func dbConn() (db *sql.DB) {
-	dbDriver := "mysql"
-	dbUser := "root"
-	dbPass := "example"
-	dbName := "book-store"
-	dbHost := "172.18.0.4:3306"
-	db, err := sql.Open(dbDriver, dbUser+":"+dbPass+"@tcp("+dbHost+")/"+dbName)
-	if err != nil {
-		panic(err.Error())
-	}
-	return db
-}
+//func dbConn() (db *sql.DB) {
+//	//dbDriver := "mysql"
+//	//dbUser := "root"
+//	//dbPass := "example"
+//	//dbName := "book-store"
+//	//dbHost := "172.18.0.3:3306"
+//	//db, err := sql.Open(dbDriver, dbUser+":"+dbPass+"@tcp("+dbHost+")/"+dbName)
+//	if err != nil {
+//		panic(err.Error())
+//	}
+//	return db
+//}
 
 func main() {
 
-	//db, err := sql.Open("mysql", "root:example@tcp(172.18.0.2:3306)/book-store")
-	//
+	//db, err := sql.Open("mysql", "root:example@tcp(172.18.0.4:3306)/book-store")
+
 	//err = db.Ping()
 	//if err != nil {
 	//	log.Fatal(err)
@@ -67,16 +67,15 @@ func getBooks(w http.ResponseWriter, r *http.Request) {
 }
 
 func getBook(w http.ResponseWriter, r *http.Request) {
-	db := dbConn()
-	//db, err := sql.Open("mysql", "root:example@tcp(172.18.0.2:3306)/book-store")
-	//
-	//err = db.Ping()
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//
-	//
-	//defer db.Close()
+	//db := dbConn()
+	db, err := sql.Open("mysql", "root:example@tcp(172.18.0.2:3306)/book-store")
+
+	err = db.Ping()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer db.Close()
 
 	fmt.Println("getBook")
 
@@ -91,7 +90,7 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 
 	rows := db.QueryRow(query, id)
 
-	err := rows.Scan(&book.ID, &book.Title, &book.Author, &book.Year)
+	err = rows.Scan(&book.ID, &book.Title, &book.Author, &book.Year)
 	if err != nil {
 		log.Fatal(err, err.Error())
 	}
@@ -102,7 +101,7 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 	//if err != nil {
 	//	log.Fatal(err)
 	//}
-
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
 	json.NewEncoder(w).Encode(book)
 	return

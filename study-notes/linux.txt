@@ -1,0 +1,6 @@
+################ LINUX STUDY NOTES ###########
+
+#1 List Environment Variables 
+
+printenv 
+printenv HOME

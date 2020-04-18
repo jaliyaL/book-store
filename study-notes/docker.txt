@@ -1,0 +1,15 @@
+############ DOCKER STUDY NOTES ##########
+
+## useful links
+https://github.com/wsargent/docker-cheat-sheet
+
+
+#1 install docker
+
+sudo snap install docker 
+sudo apt install docker.io
+
+#2 uninstall docker
+
+sudo snap remove docker
+sudo apt-get remove docker docker-engine docker.io containerd runc
