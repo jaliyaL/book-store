@@ -1,8 +1,8 @@
 host: "172.18.0.2"
 port: 3306
 database: "book-store"
-user_name: "drvapilum"
-password: "root"
+user_name: "root"
+password: "example"
 max_open_conn: 100
 max_idle_conn: 0
 conn_max_life_time: 10000

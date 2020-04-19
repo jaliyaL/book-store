@@ -28,10 +28,10 @@ func InitOptionalDB() {
 
 	dbConfig := DatabaseConfig{}
 
-	yamlFile, err := ioutil.ReadFile("./config/database_optional.yaml")
+	yamlFile, err := ioutil.ReadFile("./config/database.yaml")
 
 	if err != nil {
-		log.Fatal("unable to read ./config/database_optional.yaml file ", err)
+		log.Fatal("unable to read ./config/database.yaml file ", err)
 	}
 
 	err = yaml.Unmarshal(yamlFile, &dbConfig)

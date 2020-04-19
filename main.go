@@ -1,7 +1,7 @@
 package main
 
 import (
-	"database/sql"
+	db "book-store/bootstrap"
 	"encoding/json"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
@@ -47,6 +47,9 @@ func main() {
 	//
 	//
 	//defer db.Close()
+	db.InitOptionalDB()
+
+	defer db.CloseOptionalDB()
 
 	fmt.Println("Hello world")
 
@@ -68,7 +71,7 @@ func getBooks(w http.ResponseWriter, r *http.Request) {
 
 func getBook(w http.ResponseWriter, r *http.Request) {
 	//db := dbConn()
-	db, err := sql.Open("mysql", "root:example@tcp(172.18.0.2:3306)/book-store")
+	//db, err := sql.Open("mysql", "root:example@tcp(172.18.0.2:3306)/book-store")
 
 	err = db.Ping()
 	if err != nil {
@@ -88,7 +91,7 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 
 	query := "select * from books where id = ?"
 
-	rows := db.QueryRow(query, id)
+	rows := bootstrap.Conn.QueryRow(query, id)
 
 	err = rows.Scan(&book.ID, &book.Title, &book.Author, &book.Year)
 	if err != nil {
