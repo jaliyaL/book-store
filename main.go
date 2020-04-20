@@ -10,22 +10,32 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"net/http"
+	"strconv"
 )
 
-//var db *sql.DB
 var err error
+
+type BookService interface {
+	GetSelectedBook(bookId int) (res domain.Book, err error)
+}
+
+type BookServiceImplementation struct{}
+
+func (b BookServiceImplementation) GetSelectedBook(bookId int) (res domain.Book, err error) {
+	query := "select * from books where id = ?"
+
+	rows := bootstrap.Conn.QueryRow(query, bookId)
+
+	err = rows.Scan(&res.ID, &res.Title, &res.Author, &res.Year)
+	if err != nil {
+		log.Fatal(err, err.Error())
+	}
+
+	return res, nil
+}
 
 func main() {
 
-	//db, err := sql.Open("mysql", "root:example@tcp(172.18.0.4:3306)/book-store")
-
-	//err = db.Ping()
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	//
-	//
-	//defer db.Close()
 	bootstrap.InitOptionalDB()
 
 	defer bootstrap.CloseOptionalDB()
@@ -49,40 +59,31 @@ func getBooks(w http.ResponseWriter, r *http.Request) {
 }
 
 func getBook(w http.ResponseWriter, r *http.Request) {
-	//db := dbConn()
-	//db, err := sql.Open("mysql", "root:example@tcp(172.18.0.2:3306)/book-store")
-
-	//err = db.Ping()
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-
-	//defer db.Close()
 
 	fmt.Println("getBook")
 
 	vars := mux.Vars(r)
 	id := vars["id"]
 
+	bookId, _ := strconv.Atoi(id)
+
 	log.Println("id", id)
 
 	var book domain.Book
 
-	query := "select * from books where id = ?"
+	res, _ := BookService().GetSelectedBook(bookId)
 
-	rows := bootstrap.Conn.QueryRow(query, id)
+	fmt.Println(res)
 
-	err = rows.Scan(&book.ID, &book.Title, &book.Author, &book.Year)
-	if err != nil {
-		log.Fatal(err, err.Error())
-	}
-	////fmt.Println(book)
-	//fmt.Println("bi")
-	//err = db.QueryRow("select * from books where id=?", id).Scan(&book.ID, &book.Title, &book.Author, &book.Year)
-	//fmt.Println("hi")
+	//query := "select * from books where id = ?"
+	//
+	//rows := bootstrap.Conn.QueryRow(query, id)
+	//
+	//err = rows.Scan(&book.ID, &book.Title, &book.Author, &book.Year)
 	//if err != nil {
-	//	log.Fatal(err)
+	//	log.Fatal(err, err.Error())
 	//}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
 	json.NewEncoder(w).Encode(book)
