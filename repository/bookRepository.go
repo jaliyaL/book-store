@@ -6,6 +6,10 @@ import (
 	logger "github.com/sirupsen/logrus"
 )
 
+type BookRepo interface {
+	GetBooks(bookId int) (res domain.Book, err error)
+}
+
 type BookRepoImplementation struct {
 }
 

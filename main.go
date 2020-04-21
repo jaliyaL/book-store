@@ -61,14 +61,12 @@ func getBooks(w http.ResponseWriter, r *http.Request) {
 
 func getBook(w http.ResponseWriter, r *http.Request) {
 
-	fmt.Println("getBook")
-
 	vars := mux.Vars(r)
 	id := vars["id"]
 
 	bookId, _ := strconv.Atoi(id)
 
-	log.Println("id", id)
+	//res, _ := services.BookServiceImplementation{}.GetSelectedBook(bookId)
 
 	res, _ := services.BookServiceImplementation{}.GetSelectedBook(bookId)
 
