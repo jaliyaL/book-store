@@ -3,6 +3,7 @@ package main
 import (
 	"book-store/bootstrap"
 	"book-store/domain"
+	"book-store/services"
 	"encoding/json"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
@@ -15,24 +16,24 @@ import (
 
 var err error
 
-type BookService interface {
-	GetSelectedBook(bookId int) (res domain.Book, err error)
-}
+//type BookService interface {
+//	GetSelectedBook(bookId int) (res domain.Book, err error)
+//}
 
-type BookServiceImplementation struct{}
-
-func (b BookServiceImplementation) GetSelectedBook(bookId int) (res domain.Book, err error) {
-	query := "select * from books where id = ?"
-
-	rows := bootstrap.Conn.QueryRow(query, bookId)
-
-	err = rows.Scan(&res.ID, &res.Title, &res.Author, &res.Year)
-	if err != nil {
-		log.Fatal(err, err.Error())
-	}
-
-	return res, nil
-}
+//type BookServiceImplementation struct{}
+//
+//func (b BookServiceImplementation) GetSelectedBook(bookId int) (res domain.Book, err error) {
+//	query := "select * from books where id = ?"
+//
+//	rows := bootstrap.Conn.QueryRow(query, bookId)
+//
+//	err = rows.Scan(&res.ID, &res.Title, &res.Author, &res.Year)
+//	if err != nil {
+//		log.Fatal(err, err.Error())
+//	}
+//
+//	return res, nil
+//}
 
 func main() {
 
@@ -69,20 +70,13 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 
 	log.Println("id", id)
 
-	var book domain.Book
+	res, _ := services.BookServiceImplementation{}.GetSelectedBook(bookId)
 
-	res, _ := BookService().GetSelectedBook(bookId)
-
-	fmt.Println(res)
-
-	//query := "select * from books where id = ?"
-	//
-	//rows := bootstrap.Conn.QueryRow(query, id)
-	//
-	//err = rows.Scan(&book.ID, &book.Title, &book.Author, &book.Year)
-	//if err != nil {
-	//	log.Fatal(err, err.Error())
-	//}
+	book := domain.Book{}
+	book.Author = res.Author
+	book.ID = res.ID
+	book.Title = res.Title
+	book.Year = res.Year
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
