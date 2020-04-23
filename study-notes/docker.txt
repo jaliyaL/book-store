@@ -5,11 +5,24 @@ https://github.com/wsargent/docker-cheat-sheet
 
 
 #1 install docker
+https://www.unixtutorial.org/how-to-install-docker-in-ubuntu-using-snap
 
-sudo snap install docker 
+sudo snap install docker
 sudo apt install docker.io
 
 #2 uninstall docker
 
 sudo snap remove docker
 sudo apt-get remove docker docker-engine docker.io containerd runc
+
+#3 lensesio/fast-data-dev - kafka docker image
+https://github.com/lensesio/fast-data-dev
+
+docker run --rm --net=host lensesio/fast-data-dev
+
+#That's it. Visit http://localhost:3030 to get into the fast-data-dev environment
+
+#kafka command line tools
+docker run --rm -it --net=host lensesio/fast-data-dev bash
+
+

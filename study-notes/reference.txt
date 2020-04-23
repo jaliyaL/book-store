@@ -2,3 +2,6 @@
 http://go-database-sql.org/index.html
 https://tutorialedge.net/golang/golang-mysql-tutorial/
 https://github.com/go-sql-driver/mysql
+
+# fast-data-dev
+https://medium.com/@mohittalniya/part-2-creating-topics-consumers-and-producers-177b2a48ebbe
