@@ -5,3 +5,7 @@ https://github.com/go-sql-driver/mysql
 
 # fast-data-dev
 https://medium.com/@mohittalniya/part-2-creating-topics-consumers-and-producers-177b2a48ebbe
+
+#shopify sarama tutorials
+https://medium.com/@Oskarr3/implementing-cqrs-using-kafka-and-sarama-library-in-golang-da7efa3b77fe
+https://ednsquare.com/story/create-kafka-producer-with-golang-and-sarama------ItGvwK

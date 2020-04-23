@@ -1,0 +1,4 @@
+##fast-data-dev
+
+#create topic
+kafka-topics --zookeeper 127.0.0.1 --create --topic book-topic --partitions 3 --replication-factor 1
