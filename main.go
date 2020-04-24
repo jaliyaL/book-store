@@ -9,7 +9,10 @@ import (
 	"github.com/Shopify/sarama"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
+	schemaregistry "github.com/landoop/schema-registry"
+	"github.com/linkedin/goavro/v2"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	logger "github.com/sirupsen/logrus"
 	"log"
 	"net/http"
 	"strconv"
@@ -17,11 +20,19 @@ import (
 
 var err error
 
-type customer struct {
-	Name   string  `json:"name"`
-	Age    int     `json:"age"`
-	Height float32 `json:"height"`
-	Weight float32 `json:"weight"`
+type BookDetails struct {
+	Title  string `json:"title"`
+	Author struct {
+		Firstname string `json:"firstname"`
+		Lastname  string `json:"lastname"`
+	} `json:"author"`
+	Year int `json:"year"`
+}
+
+type AddBookEvent struct {
+	Title  string `json:"title"`
+	Author string `json:"author"`
+	Year   int    `json:"year"`
 }
 
 //type BookService interface {
@@ -93,6 +104,47 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 func addBook(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("addBook")
 
+	//decode request
+	bookDetails := BookDetails{}
+	err := json.NewDecoder(r.Body).Decode(&bookDetails)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	addBookEvent := AddBookEvent{}
+	addBookEvent.Title = bookDetails.Title
+	addBookEvent.Author = bookDetails.Author.Firstname + bookDetails.Author.Lastname
+	addBookEvent.Year = bookDetails.Year
+
+	byt, err := json.Marshal(addBookEvent)
+	logger.Info("marshal request", byt)
+
+	//schemaregistry
+	client, _ := schemaregistry.NewClient("localhost:8081")
+	//schema, _ := client.GetSchemaByID(10)
+	schema, _ := client.GetSchemaBySubject("newBookAdded", 1)
+	logger.Info("schema: ", schema.Schema)
+
+	//goavro
+	codec, err := goavro.NewCodec(schema.Schema)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// Convert textual Avro data (in Avro JSON format) to native Go form
+	native, _, err := codec.NativeFromTextual(byt)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	// Convert native Go form to binary Avro data
+	binary, err := codec.BinaryFromNative(nil, native)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	logger.Info("decode request", bookDetails)
 	//produce to kafka
 
 	//setup relevant config info
@@ -120,22 +172,17 @@ func addBook(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
-	//customer_details
-	customerData := customer{
-		Name:   "kusal",
-		Age:    34,
-		Height: 2.44,
-		Weight: 132.45,
-	}
+	//err = json.Unmarshal(byt, &bookDetails)
+	//logger.Info("unmarshal request", bookDetails)
 
-	byt, err := json.Marshal(customerData)
+	//err = json.NewEncoder(w).Encode(book)
 
-	topic := "book-topic"
+	topic := "book-topic1"
 	msg := &sarama.ProducerMessage{
 		Topic:     topic,
 		Partition: 1,
-		//Key:       sarama.StringEncoder("test-key"),
-		Value: sarama.ByteEncoder(byt),
+		Key:       sarama.StringEncoder("test-key"),
+		Value:     sarama.ByteEncoder(binary),
 	}
 
 	partition, offset, err := producer.SendMessage(msg)
