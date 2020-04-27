@@ -120,7 +120,7 @@ func addBook(w http.ResponseWriter, r *http.Request) {
 	byt, err := json.Marshal(addBookEvent)
 	logger.Info("marshal request", byt)
 
-	//schemaregistry
+	//get schema from schemaregistry
 	client, _ := schemaregistry.NewClient("localhost:8081")
 	//schema, _ := client.GetSchemaByID(10)
 	schema, _ := client.GetSchemaBySubject("newBookAdded", 1)
@@ -177,7 +177,7 @@ func addBook(w http.ResponseWriter, r *http.Request) {
 
 	//err = json.NewEncoder(w).Encode(book)
 
-	topic := "book-topic1"
+	topic := "book-topic"
 	msg := &sarama.ProducerMessage{
 		Topic:     topic,
 		Partition: 1,
