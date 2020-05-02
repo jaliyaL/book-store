@@ -17,3 +17,7 @@ https://godoc.org/github.com/Landoop/schema-registry
 
 ## goavro
 https://github.com/linkedin/goavro
+
+
+## goroutines
+https://medium.com/@vigneshsk/how-to-write-high-performance-code-in-golang-using-go-routines-227edf979c3c
