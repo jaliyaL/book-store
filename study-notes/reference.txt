@@ -9,6 +9,7 @@ https://medium.com/@mohittalniya/part-2-creating-topics-consumers-and-producers-
 ## shopify sarama tutorials
 https://medium.com/@Oskarr3/implementing-cqrs-using-kafka-and-sarama-library-in-golang-da7efa3b77fe
 https://ednsquare.com/story/create-kafka-producer-with-golang-and-sarama------ItGvwK
+https://golang.hotexamples.com/examples/github.com.shopify.sarama/Consumer/-/golang-consumer-class-examples.html
 
 ## lensesio/schema-registry (schema registry)
 https://github.com/lensesio/schema-registry
