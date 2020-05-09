@@ -112,6 +112,7 @@ func addBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	//prepare data for kafka
 	addBookEvent := AddBookEvent{}
 	addBookEvent.Title = bookDetails.Title
 	addBookEvent.Author = bookDetails.Author.Firstname + bookDetails.Author.Lastname
@@ -126,7 +127,7 @@ func addBook(w http.ResponseWriter, r *http.Request) {
 	schema, _ := client.GetSchemaBySubject("newBookAdded", 1)
 	logger.Info("schema: ", schema.Schema)
 
-	//goavro
+	//goavro - encode process by using schema
 	codec, err := goavro.NewCodec(schema.Schema)
 	if err != nil {
 		fmt.Println(err)
@@ -147,7 +148,7 @@ func addBook(w http.ResponseWriter, r *http.Request) {
 	logger.Info("decode request", bookDetails)
 	//produce to kafka
 
-	//setup relevant config info
+	//kafka client - setup relevant config info
 	config := sarama.NewConfig()
 	//config.Producer.Partitioner = sarama.NewRandomPartitioner
 	//config.Producer.RequiredAcks = sarama.WaitForAll

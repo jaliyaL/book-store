@@ -21,3 +21,7 @@ https://github.com/linkedin/goavro
 
 ## goroutines
 https://medium.com/@vigneshsk/how-to-write-high-performance-code-in-golang-using-go-routines-227edf979c3c
+https://medium.com/@_orcaman/when-too-much-concurrency-slows-you-down-golang-9c144ca305a
+
+#Slow down your code with goroutines
+https://appliedgo.net/concurrencyslower/
